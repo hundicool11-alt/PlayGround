@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#8ed8eb" />
+    <title>Little Worlds — Voxel Island</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main id="game">
+      <div id="viewport"></div>
+      <div class="vignette"></div>
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark">▦</span><span>LITTLE <b>WORLDS</b></span></div>
+        <div class="world-label"><span class="live-dot"></span> THE FLOATING ISLE <span class="world-separator">/</span> <span id="coords">X 0 · Z 0</span></div>
+        <div class="top-actions"><button id="soundBtn" class="icon-button" aria-label="Toggle ambient sound" title="Sound: off">♪</button><button id="fullscreenBtn" class="icon-button" aria-label="Toggle fullscreen">⛶</button></div>
+      </header>
+      <section class="hud" aria-label="Game status">
+        <div class="weather-card glass">
+          <div class="sun-icon" id="weatherIcon">☀</div>
+          <div><div class="eyebrow" id="periodName">GOLDEN HOUR</div><div class="clock-line"><span id="clock">08:20</span><span class="clock-divider">·</span><span id="weatherText">CLEAR SKIES</span></div></div>
+          <div class="day-count"><span>DAY</span><b id="dayNumber">01</b></div>
+        </div>
+        <div class="quest-card glass"><span class="quest-sparkle">✦</span><div><div class="eyebrow">A QUIET PLACE</div><div class="quest-copy">Make this little island yours.</div></div><div class="quest-progress"><i></i><i></i><i></i></div></div>
+      </section>
+      <div class="crosshair" aria-hidden="true"><i></i><i></i></div>
+      <div id="targetHint" class="target-hint">LMB <span>break</span> <b>·</b> RMB <span>place</span></div>
+      <aside class="right-hint"><span class="keycap">CLICK</span> <span>look around · TAB free cursor</span></aside>
+      <div id="hotbar" class="hotbar" aria-label="Block inventory"></div>
+      <div class="bottom-caption"><span class="caption-marker">✧</span> <span>YOUR OWN LITTLE CORNER OF THE WORLD</span> <span class="caption-marker">✧</span></div>
+      <div id="toast" class="toast"></div>
+      <div id="intro" class="intro-screen">
+        <div class="intro-card">
+          <div class="intro-kicker"><span>✦</span> A SMALL WORLD TO CALL YOURS</div>
+          <h1>Find your<br /><em>little wild.</em></h1>
+          <p>A quiet island above the clouds. Gather blocks, make a home, and watch the sky turn.</p>
+          <button id="playBtn" class="play-button">STEP INTO THE ISLAND <span>↗</span></button>
+          <div class="intro-foot"><span>NO RULES, JUST ROOM TO BREATHE</span><span>WORLD 01</span></div>
+        </div>
+        <div class="intro-tip"><span class="tip-icon">⌘</span><span><b>Take it slow.</b> The island changes with the light.</span></div>
+      </div>
+      <div class="mobile-controls" id="mobileControls">
+        <div class="move-pad"><button data-move="forward" class="move up">▲</button><button data-move="left" class="move left">◀</button><button data-move="back" class="move down">▼</button><button data-move="right" class="move right">▶</button></div>
+        <div class="touch-actions"><button id="jumpBtn" class="touch-action">↑<small>JUMP</small></button><button id="mineBtn" class="touch-action">✦<small>MINE</small></button><button id="placeBtn" class="touch-action">＋<small>PLACE</small></button></div>
+      </div>
+      <div id="loading" class="loading"><span class="loader"></span><span>growing your island…</span></div>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
