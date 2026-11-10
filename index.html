@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<meta name="theme-color" content="#95d8dd" />
+<link rel="icon" href="data:," />
+<title>Skybound — A voxel island adventure</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+:root{--ink:#24383d;--muted:#758b8e;--cream:#fffdf6;--teal:#57c7b1;--gold:#ffcf70;--glass:rgba(255,253,246,.86)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#a5dce1;color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}canvas{display:block;position:fixed;inset:0;width:100%;height:100%;outline:none}
+#ui{position:fixed;inset:0;pointer-events:none;z-index:2}.topbar{position:absolute;top:24px;left:28px;right:28px;display:flex;align-items:flex-start;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px}.brandmark{width:43px;height:43px;border-radius:14px;background:#fff9e9;display:grid;place-items:center;box-shadow:0 6px 20px #33565a22;font-size:23px}.brand h1{font-size:15px;letter-spacing:.13em;text-transform:uppercase;margin:0 0 3px;font-weight:800}.brand p{font-size:11px;color:#527176;margin:0;letter-spacing:.03em}.topright{display:flex;gap:9px;align-items:center}.pill{height:39px;border:1px solid #ffffffa6;border-radius:12px;background:var(--glass);box-shadow:0 4px 18px #33565a12;padding:0 13px;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.04em;backdrop-filter:blur(12px)}.pill .dot{width:8px;height:8px;border-radius:50%;background:#ffbf59;box-shadow:0 0 0 3px #ffbf592e}.pill.clock{font-family:'DM Mono',monospace;font-size:12px;min-width:99px;justify-content:center}.soundbtn{pointer-events:auto;cursor:pointer;width:39px;padding:0;justify-content:center;font-size:16px}
+.objective{position:absolute;left:28px;top:104px;width:220px;padding:15px 16px 14px;border:1px solid #ffffffa6;border-radius:16px;background:var(--glass);box-shadow:0 8px 26px #33565a12;backdrop-filter:blur(12px)}.eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;color:#6b9292;text-transform:uppercase}.objective h2{font-size:14px;margin:6px 0 4px}.objective p{font-size:11px;color:#718589;line-height:1.45;margin:0}.crystalrow{display:flex;gap:6px;margin-top:12px}.crystalpip{height:5px;width:28px;border-radius:4px;background:#d6e5de;transition:.3s}.crystalpip.on{background:#62cfc5;box-shadow:0 0 10px #62cfc580}
+.crosshair{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);opacity:.9}.crosshair:before,.crosshair:after{content:'';position:absolute;background:#fffdf6;border:1px solid #425e6080;box-shadow:0 1px 3px #24383d55;border-radius:2px}.crosshair:before{width:2px;height:18px;left:8px}.crosshair:after{height:2px;width:18px;top:8px}.crosshair.hit{transform:translate(-50%,-50%) scale(1.3)}.toast{position:absolute;top:calc(50% + 28px);left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:#24383ddd;color:#fff8e9;padding:7px 12px;border-radius:20px;opacity:0;transition:opacity .15s}.toast.show{opacity:1}
+.bottom{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px}.hotbar{pointer-events:auto;display:flex;gap:6px;padding:7px;background:#fff9e9e8;border:1px solid #fff;box-shadow:0 8px 25px #29464824;border-radius:14px;backdrop-filter:blur(10px)}.slot{position:relative;width:49px;height:49px;border:1px solid #d5dfd5;border-radius:9px;background:#f1f0df;display:grid;place-items:center;font-size:23px;transition:all .12s}.slot.active{background:#fff;border:2px solid #5cc5b1;transform:translateY(-4px);box-shadow:0 4px 0 #53aa9b}.slot .key{position:absolute;top:3px;left:5px;font:9px 'DM Mono',monospace;color:#849294}.hint{font:10px 'DM Mono',monospace;letter-spacing:.04em;color:#fff;text-shadow:0 1px 5px #254a50}.hint kbd{font:inherit;background:#f9f4e3e8;color:#466064;text-shadow:none;padding:3px 6px;border-radius:5px;margin:0 2px}
+.rightinfo{position:absolute;right:28px;bottom:33px;text-align:right;color:#fff;text-shadow:0 1px 7px #31565b}.rightinfo strong{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase}.rightinfo span{font:10px 'DM Mono',monospace;opacity:.85}.welcome{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);text-align:center;transition:opacity .8s;white-space:nowrap}.welcome h2{font-size:clamp(24px,4vw,43px);letter-spacing:-.04em;margin:0;color:#fffdf3;text-shadow:0 3px 20px #365b5f66}.welcome p{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#fffdf3;text-shadow:0 1px 10px #34595a;margin:8px 0 0}.welcome.hide{opacity:0}
+#mobile{display:none;pointer-events:none;position:absolute;inset:0}.stick{pointer-events:auto;position:absolute;bottom:28px;left:24px;width:118px;height:118px;border-radius:50%;background:#fff8e966;border:1px solid #ffffffaa;touch-action:none}.stick:after{content:'';position:absolute;width:43px;height:43px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#fffdf0dd;box-shadow:0 3px 10px #263e3c33}.mobile-actions{position:absolute;right:22px;bottom:34px;display:grid;grid-template-columns:58px 58px;gap:9px;pointer-events:auto}.action{width:58px;height:58px;border:1px solid #fff;border-radius:50%;background:#fff8e9e8;color:#385153;font-size:19px;box-shadow:0 5px 15px #29464826}.action.jump{grid-column:2;background:#69cdb5}.action.mine{grid-column:1;grid-row:2}.action.place{grid-column:2;grid-row:2}
+@media(max-width:700px){.topbar{top:14px;left:14px;right:14px}.brandmark{width:37px;height:37px}.brand h1{font-size:12px}.brand p{font-size:9px}.pill{height:34px;padding:0 9px;font-size:9px}.pill.clock{min-width:78px;font-size:10px}.soundbtn{width:34px}.objective{top:68px;left:14px;width:175px;padding:11px 12px}.objective h2{font-size:12px}.objective p{font-size:10px}.crystalrow{margin-top:8px}.bottom{bottom:15px;gap:5px}.hotbar{gap:4px;padding:5px}.slot{width:39px;height:39px;font-size:19px}.hint{font-size:8px}.rightinfo{display:none}#mobile{display:block}.welcome{top:38%}.welcome p{font-size:9px}.crosshair{display:none}}
+@media(max-height:520px){.objective{top:68px}.bottom{bottom:8px}.hotbar{padding:4px}.slot{width:36px;height:36px}.hint{display:none}}
+</style>
+</head>
+<body>
+<div id="ui">
+  <div class="topbar"><div class="brand"><div class="brandmark">☁️</div><div><h1>Skybound</h1><p>a little island in the clouds</p></div></div><div class="topright"><div class="pill"><i class="dot" id="daydot"></i><span id="phase">GOLDEN HOUR</span></div><div class="pill clock" id="clock">08:24 AM</div><button class="pill soundbtn" id="sound" aria-label="Toggle ambience">♫</button></div></div>
+  <div class="objective"><div class="eyebrow">Island journal · 01</div><h2 id="questtitle">Gather sky crystals</h2><p id="questcopy">Find the three little lights hidden around the island.</p><div class="crystalrow"><i class="crystalpip"></i><i class="crystalpip"></i><i class="crystalpip"></i></div></div>
+  <div class="crosshair" id="crosshair"></div><div class="toast" id="toast">Stone</div>
+  <div class="welcome" id="welcome"><h2>Somewhere above the clouds</h2><p>Take a breath. This island is yours.</p></div>
+  <div class="bottom"><div class="hotbar" id="hotbar"><div class="slot active" data-slot="0"><span class="key">1</span>🌿</div><div class="slot" data-slot="1"><span class="key">2</span>🪵</div><div class="slot" data-slot="2"><span class="key">3</span>🪨</div><div class="slot" data-slot="3"><span class="key">4</span>🌼</div><div class="slot" data-slot="4"><span class="key">5</span>✨</div></div><div class="hint"><kbd>WASD</kbd> wander <kbd>drag</kbd> look <kbd>click</kbd> gather <kbd>space</kbd> hop</div></div>
+  <div class="rightinfo"><strong>Driftwood Cay</strong><span>above the quiet sea · 03 crystals</span></div>
+  <div id="mobile"><div class="stick" id="stick"></div><div class="mobile-actions"><button class="action jump" id="mjump">↑</button><button class="action mine" id="mmine">✦</button><button class="action place" id="mplace">＋</button></div></div>
+</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#a9dce0');
+scene.fog = new THREE.Fog('#b9e2dd', 32, 90);
+const camera = new THREE.PerspectiveCamera(54, innerWidth / innerHeight, .1, 150);
+const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
+renderer.setSize(innerWidth, innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio, 1.7));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
+document.body.prepend(renderer.domElement);
+
+const hemi = new THREE.HemisphereLight('#e7fffb','#6a765f',2.1); scene.add(hemi);
+const sun = new THREE.DirectionalLight('#fff0c4',3.2); sun.position.set(-12,23,10); sun.castShadow = true;
+sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.left=-24; sun.shadow.camera.right=24; sun.shadow.camera.top=30; sun.shadow.camera.bottom=-24; sun.shadow.bias=-.0005; scene.add(sun);
+const moonLight = new THREE.DirectionalLight('#a9c5ff',0); moonLight.position.set(13,16,-14); scene.add(moonLight);
+
+const blockGeo = new THREE.BoxGeometry(1,1,1);
+function mat(color, rough=.92){return new THREE.MeshStandardMaterial({color,roughness:rough,flatShading:true})}
+const mats={grass:mat('#79bd68'),dirt:mat('#a87954'),stone:mat('#777f7b'),deep:mat('#5f6b6d'),wood:mat('#98704d'),leaf:mat('#4b9e72'),sand:mat('#d6c48c'),flower:mat('#fff0a1'),crystal:mat('#77e6db',.35)};
+const rand=(n)=>{let x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x)};
+function heightAt(x,z){return Math.round(1.6+Math.sin(x*.31)*.42+Math.cos(z*.27)*.36+Math.sin((x+z)*.22)*.28)}
+function edgeAt(x,z){return 14.2 + (rand((x+24)*27+z+41)-.5)*1.1 + Math.sin(x*.7+z*.31)*.4}
+const batches={grass:[],dirt:[],stone:[],deep:[]}; const topBlocks=new Map();
+for(let x=-15;x<=15;x++)for(let z=-15;z<=15;z++){
+  const dist=Math.sqrt(x*x*1.03+z*z*.94); if(dist>edgeAt(x,z))continue;
+  const h=heightAt(x,z); topBlocks.set(`${x},${z}`,{x,y:h,z,type:'grass',removed:false});
+  batches.grass.push({x,y:h,z});
+  const underRadius=14.2 - Math.max(0, -h)*.12;
+  const depth=Math.max(1, Math.floor(8 - dist*.18 + rand(x*12+z)*2));
+  for(let d=1;d<=depth;d++){
+    const yy=h-d; let type=d<=2?'dirt':(d>depth-2?'deep':'stone');
+    if(d>2 && dist>underRadius && d>4)continue;
+    batches[type].push({x,y:yy,z});
+  }
+}
+const terrainMeshes=[]; const terrainHitMeshes=[];
+for(const type of Object.keys(batches)){
+ const items=batches[type], mesh=new THREE.InstancedMesh(blockGeo,mats[type],items.length); mesh.castShadow=true; mesh.receiveShadow=true;
+ const dummy=new THREE.Object3D(); items.forEach((b,i)=>{dummy.position.set(b.x,b.y,b.z);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);
+   const v= .88+rand(b.x*155+b.z*73+b.y*11)*.22; mesh.setColorAt(i,new THREE.Color(v,v,v)); });
+ mesh.instanceMatrix.needsUpdate=true; if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;
+ mesh.userData.blocks=items; scene.add(mesh); terrainMeshes.push(mesh); terrainHitMeshes.push(mesh);
+}
+
+// Decorative block clusters use their own lightweight cubes.
+const decoGroup=new THREE.Group(); scene.add(decoGroup);
+function cube(x,y,z,sx,sy,sz,material, parent=decoGroup){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function groundY(x,z){return heightAt(Math.round(x),Math.round(z))+.55}
+function tree(x,z,scale=1){const y=groundY(x,z);for(let i=0;i<4*scale;i++)cube(x,y+i+.5,z,.72*scale,.9,.72*scale,mats.wood);
+ for(let layer=0;layer<3;layer++){let r=2-layer*.35;for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++)if(Math.abs(dx)+Math.abs(dz)<4 && rand(x*30+z*13+dx*4+dz+layer*7)>.14)cube(x+dx*.72*scale,y+3.3+layer*.75,z+dz*.72*scale,.85*scale,.85*scale,.85*scale,mats.leaf);}
+ cube(x,y+5.25,z,.75*scale,.8,.75*scale,mats.leaf);
+}
+tree(-7,-3,1);tree(7,-7,.88);tree(9,4,.9);tree(-10,6,.82);tree(1,10,.78);
+// A welcoming little cabin at the far edge.
+const cabinX=6,cabinZ=-8, cabinY=groundY(cabinX,cabinZ);
+for(let x=0;x<5;x++)for(let z=0;z<4;z++)cube(cabinX+x,cabinY,cabinZ+z,1,.28,1,mats.wood);
+for(let y=1;y<=3;y++)for(let x=0;x<5;x++)for(let z of [0,3])cube(cabinX+x,cabinY+y,cabinZ+z,1,1,1,(y===3?mats.wood:(x===2&&y<3?mats.dirt:mats.wood)));
+for(let y=1;y<=3;y++)for(let z=1;z<=2;z++)for(let x of [0,4])cube(cabinX+x,cabinY+y,cabinZ+z,1,1,1,mats.wood);
+for(let x=-1;x<=5;x++)for(let z=-1;z<=4;z++){let roof=cube(cabinX+x,cabinY+4-Math.min(Math.abs(x-2),Math.abs(z-1.5)*.25),cabinZ+z,1,.6,1,mats.dirt);}
+// Soft paths and flower patches.
+for(let i=0;i<20;i++){let x=2+i*.28,z=-2-i*.31+Math.sin(i*.22)*.6;let b=topBlocks.get(`${Math.round(x)},${Math.round(z)}`);if(b)cube(x,b.y+.52,z,.65,.1,.65,mats.sand);}
+for(let i=0;i<52;i++){let a=rand(i*2+8)*Math.PI*2,r=4+rand(i*3+5)*8,x=Math.round(Math.cos(a)*r),z=Math.round(Math.sin(a)*r);const b=topBlocks.get(`${x},${z}`);if(b&&rand(i+77)>.45){cube(x,b.y+.9,z,.22,.38,.22,mats.leaf);cube(x,b.y+1.12,z,.28,.18,.28,mats.flower);}}
+
+// A little stepping-stone path winds between the cabin and the island heart.
+const waterMat=new THREE.MeshStandardMaterial({color:'#69c9cf',roughness:.27,metalness:.08,transparent:true,opacity:.75});
+const sea=new THREE.Mesh(new THREE.CircleGeometry(80,64),waterMat);sea.rotation.x=-Math.PI/2;sea.position.y=-11.2;sea.receiveShadow=true;scene.add(sea);
+const clouds=new THREE.Group();scene.add(clouds);
+for(let i=0;i<22;i++){let a=rand(i*21+4)*Math.PI*2,r=20+rand(i*3)*16,x=Math.cos(a)*r,z=Math.sin(a)*r,y=-4+rand(i*13)*6;
+ const c=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshStandardMaterial({color:'#f5fbf4',roughness:1,transparent:true,opacity:.7})); c.scale.set(2.6+rand(i)*2, .75+rand(i+33)*.7,1.8+rand(i+5)*2);c.position.set(x,y,z);clouds.add(c);}
+// Floating crystals, the island's tiny scavenger hunt.
+const crystalSpots=[[-9,1], [4,-10], [10,1]]; const crystalMeshes=[];
+const crystalGeo=new THREE.OctahedronGeometry(.55,0);
+crystalSpots.forEach(([x,z],i)=>{const b=topBlocks.get(`${x},${z}`);if(!b)return;
+ const group=new THREE.Group();group.position.set(x,b.y+1.35,z);group.userData={id:i,base:b.y+1.35};
+ const c=new THREE.Mesh(crystalGeo,new THREE.MeshStandardMaterial({color:'#85fff1',emissive:'#24b8a9',emissiveIntensity:1.2,roughness:.18,metalness:.12}));c.scale.set(.7,1.25,.7);c.castShadow=true;group.add(c);
+ const glow=new THREE.PointLight('#67fff0',1.8,5);glow.position.y=.2;group.add(glow);scene.add(group);crystalMeshes.push(group);
+});
+// Player camera and tiny block-person avatar.
+const player={x:0,z:0,y:0,vy:0,grounded:true,yaw:Math.PI*.78,pitch:-.12};
+const avatar=new THREE.Group();scene.add(avatar);
+const skin=mat('#e4aa80'),shirt=mat('#d98368'),pants=mat('#52697a'),hair=mat('#674b3c');
+cube(0,.15,0,.62,.3,.44,mats.wood,avatar);
+cube(0,.68,0,.56,.78,.42,shirt,avatar);cube(0,1.35,0,.54,.52,.5,skin,avatar);cube(0,1.65,-.04,.58,.2,.54,hair,avatar);
+cube(-.13,1.39,.258,.055,.055,.025,mat('#3c4647'),avatar);cube(.13,1.39,.258,.055,.055,.025,mat('#3c4647'),avatar);
+cube(-.17,-.05,0,.2,.45,.25,pants,avatar);cube(.17,-.05,0,.2,.45,.25,pants,avatar);
+avatar.visible=false;
+const raycaster=new THREE.Raycaster();raycaster.far=5.5;
+function updateCamera(){const eye=new THREE.Vector3(player.x,player.y+1.3,player.z);const dir=new THREE.Vector3(Math.sin(player.yaw)*Math.cos(player.pitch),Math.sin(player.pitch),Math.cos(player.yaw)*Math.cos(player.pitch));camera.position.copy(eye).addScaledVector(dir,-10);camera.position.y+=2.6;camera.lookAt(eye.x+dir.x*5,eye.y+dir.y*5,eye.z+dir.z*5);avatar.position.set(player.x,player.y,player.z);avatar.rotation.y=player.yaw+Math.PI;}
+updateCamera();
+
+// A responsive, simple block interaction layer. Break and replace the top voxel at the crosshair.
+const edits=new Map();let selected=0, crystalsFound=0, toastTimer=0;
+const toast=document.getElementById('toast'), crosshair=document.getElementById('crosshair');
+function showToast(text){toast.textContent=text;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),900);}
+function pick(){raycaster.setFromCamera(new THREE.Vector2(0,0),camera);const hit=raycaster.intersectObjects(terrainHitMeshes,false)[0];return hit||null;}
+function interact(action){const hit=pick();if(!hit){showToast('Nothing in reach');return;}
+ const mesh=hit.object, index=hit.instanceId, inverse=new THREE.Matrix4().copy(mesh.matrixWorld).invert();const local=hit.point.clone().applyMatrix4(inverse);const normal=hit.face.normal.clone();
+ const matrix=new THREE.Matrix4();mesh.getMatrixAt(index,matrix);const blockPos=new THREE.Vector3().setFromMatrixPosition(matrix);
+ const cell=new THREE.Vector3(Math.round(blockPos.x),Math.round(blockPos.y),Math.round(blockPos.z));
+ const key=`${Math.round(cell.x)},${Math.round(cell.y)},${Math.round(cell.z)}`;
+ if(action==='break'){
+   if(player.x-cell.x<-.8 && false)return;
+   const dummy=new THREE.Object3D();dummy.position.set(0,-100,0);dummy.updateMatrix();mesh.setMatrixAt(index,dummy.matrix);mesh.instanceMatrix.needsUpdate=true;
+   edits.set(key,{type:'removed',x:cell.x,y:cell.y,z:cell.z});showToast('Voxel gathered');
+ }else{
+   const target=cell.add(normal);const k=`${Math.round(target.x)},${Math.round(target.y)},${Math.round(target.z)}`;
+   if(target.y>10 || target.y< -6 || Math.hypot(target.x-player.x,target.z-player.z)<1.1){showToast('Not here');return;}
+   const cubeMesh=new THREE.Mesh(blockGeo,[mats.grass,mats.wood,mats.stone,mats.flower,mats.crystal][selected]);cubeMesh.position.copy(target);cubeMesh.castShadow=true;cubeMesh.receiveShadow=true;scene.add(cubeMesh);edits.set(k,{type:'placed',x:target.x,y:target.y,z:target.z,slot:selected,mesh:cubeMesh});showToast('Voxel placed');
+ }
+}
+function findCrystal(){for(const c of crystalMeshes){if(c.userData.found)continue;if(Math.hypot(player.x-c.position.x,player.z-c.position.z)<1.65 && Math.abs(player.y+1-c.position.y)<2.8){c.userData.found=true;scene.remove(c);crystalsFound++;document.querySelectorAll('.crystalpip')[crystalsFound-1]?.classList.add('on');showToast('Sky crystal found ✨');if(crystalsFound===3){document.getElementById('questtitle').textContent='The island is yours';document.getElementById('questcopy').textContent='You found every sky crystal. Enjoy the quiet.';}return;}}}
+const keys={};window.addEventListener('keydown',e=>{keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.code.startsWith('Digit'))selectSlot(Number(e.code.slice(5))-1);if(e.code==='Space'&&player.grounded){player.vy=7.1;player.grounded=false;}if(e.code==='KeyE')interact('place');});window.addEventListener('keyup',e=>keys[e.code]=false);
+function selectSlot(n){if(n<0||n>4)return;selected=n;document.querySelectorAll('.slot').forEach((el,i)=>el.classList.toggle('active',i===n));}
+document.querySelectorAll('.slot').forEach(el=>el.addEventListener('click',()=>selectSlot(+el.dataset.slot)));
+document.getElementById('sound').addEventListener('click',e=>{e.currentTarget.textContent=e.currentTarget.textContent==='♫'?'♪':'♫';showToast('A quiet island');});
+renderer.domElement.addEventListener('click',()=>{if(innerWidth>700&&!document.pointerLockElement)renderer.domElement.requestPointerLock?.();interact('break');});
+window.addEventListener('mousedown',e=>{if(e.button===2){e.preventDefault();interact('place');}});window.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('mousemove',e=>{if(document.pointerLockElement===renderer.domElement){player.yaw-=e.movementX*.0022;player.pitch=Math.max(-.95,Math.min(.75,player.pitch-e.movementY*.0018));}});
+let touchStart=null;renderer.domElement.addEventListener('touchstart',e=>{if(e.touches.length===1){touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};}},{passive:true});renderer.domElement.addEventListener('touchmove',e=>{if(touchStart&&e.touches.length===1){const t=e.touches[0];player.yaw-=(t.clientX-touchStart.x)*.006;player.pitch=Math.max(-.8,Math.min(.6,player.pitch-(t.clientY-touchStart.y)*.004));touchStart={x:t.clientX,y:t.clientY};}},{passive:true});
+let stickInput={x:0,y:0};const stick=document.getElementById('stick');if(stick){let pointer=null;stick.addEventListener('pointerdown',e=>{pointer=e.pointerId;stick.setPointerCapture(pointer);moveStick(e);});stick.addEventListener('pointermove',e=>{if(e.pointerId===pointer)moveStick(e);});stick.addEventListener('pointerup',()=>{pointer=null;stickInput={x:0,y:0};stick.style.setProperty('--sx','0px');stick.style.setProperty('--sy','0px');});function moveStick(e){const r=stick.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),len=Math.min(36,Math.hypot(dx,dy)),a=Math.atan2(dy,dx);stickInput={x:Math.cos(a)*len/36,y:Math.sin(a)*len/36};stick.style.setProperty('--sx',`${Math.cos(a)*len}px`);stick.style.setProperty('--sy',`${Math.sin(a)*len}px`);stick.style.background=`radial-gradient(circle at calc(50% + var(--sx)) calc(50% + var(--sy)),#fffdf0 0 21px,#fff8e966 22px)`;}}
+document.getElementById('mjump').addEventListener('pointerdown',()=>{if(player.grounded){player.vy=7.1;player.grounded=false;}});document.getElementById('mmine').addEventListener('pointerdown',()=>interact('break'));document.getElementById('mplace').addEventListener('pointerdown',()=>interact('place'));
+let last=performance.now(), elapsed=0, dayTime=.32;
+const skyDay=new THREE.Color('#8dd8e1'),skySunset=new THREE.Color('#f3a978'),skyNight=new THREE.Color('#152746');
+function animate(now){requestAnimationFrame(animate);const dt=Math.min(.04,(now-last)/1000);last=now;elapsed+=dt;dayTime=(dayTime+dt/180)%1;
+ const angle=dayTime*Math.PI*2-Math.PI/2, sunlight=Math.max(0,Math.sin(angle));sun.position.set(Math.cos(angle)*25,Math.sin(angle)*30,12);sun.intensity=.12+sunlight*3.1;hemi.intensity=.28+sunlight*1.9;moonLight.intensity=.08+Math.max(0,-Math.sin(angle))*.65;
+ const sunset=Math.pow(Math.max(0,1-Math.abs(sunlight-.25)*3),1.6);const sky=skyNight.clone().lerp(skyDay,sunlight).lerp(skySunset,sunset*.68);scene.background.copy(sky);scene.fog.color.copy(sky).lerp(new THREE.Color('#a9dce6'),.08);renderer.toneMappingExposure=.72+sunlight*.43;
+ const hours=Math.floor(dayTime*24),mins=Math.floor((dayTime*24-hours)*60),ampm=hours<12?'AM':'PM';document.getElementById('clock').textContent=`${String((hours%12)||12).padStart(2,'0')}:${String(mins).padStart(2,'0')} ${ampm}`;
+ const phase=dayTime<.2||dayTime>.82?'NIGHT':dayTime<.28||dayTime>.75?'DAWN':dayTime>.68?'DUSK':'GOLDEN HOUR';document.getElementById('phase').textContent=phase;document.getElementById('daydot').style.background=phase==='NIGHT'?'#9fb5ff':phase==='DUSK'?'#ff8e70':'#ffbf59';
+ for(const c of crystalMeshes)if(!c.userData.found){c.rotation.y+=dt*.65;c.position.y=c.userData.base+Math.sin(elapsed*1.8+c.userData.id)*.15;}
+ clouds.rotation.y+=dt*.005;const forward=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)-stickInput.y,side=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+stickInput.x;const speed=5.1;
+ const dx=(Math.sin(player.yaw)*forward+Math.cos(player.yaw)*side)*speed*dt,dz=(Math.cos(player.yaw)*forward-Math.sin(player.yaw)*side)*speed*dt;
+ player.x+=dx;player.z+=dz;const floor=heightAt(Math.round(player.x),Math.round(player.z))+.5;
+ if(player.y<floor){player.y=floor;player.vy=0;player.grounded=true;}else{player.vy-=18*dt;player.y+=player.vy*dt;}
+ const dist=Math.hypot(player.x,player.z);if(dist>13){const s=12.8/dist;player.x*=s;player.z*=s;}
+ updateCamera();findCrystal();if(elapsed>5)document.getElementById('welcome').classList.add('hide');
+ renderer.render(scene,camera);}
+requestAnimationFrame(animate);
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));});
+</script>
+</body></html>
